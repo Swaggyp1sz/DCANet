@@ -1,0 +1,119 @@
+# basic configs
+scale: 4
+manual_seed: 0
+verbose: false
+
+
+# dataset configs
+dataset:
+  degradation:
+    type: BD
+    sigma: 1.5
+
+  # test1:
+  #   name: Vid4
+  #   gt_seq_dir: data/Vid4/GT
+  #   lr_seq_dir: data/Vid4/Gaussian4xLR
+  #   filter_file: ~
+  #   num_workers: 4
+  #   pin_memory: true
+
+  # test2:
+  #   name: ToS3
+  #   gt_seq_dir: data/ToS3/GT
+  #   lr_seq_dir: data/ToS3/Gaussian4xLR
+  #   filter_file: ~
+  #   num_workers: 4
+  #   pin_memory: true
+  test2:
+    name: vimeo90kfast
+    gt_seq_dir: data/vimeo90kfast/GT
+    lr_seq_dir: data/vimeo90kfast/Gaussian4xLR
+    filter_file: ~
+    num_workers: 4
+    pin_memory: true
+    
+  # test3:
+  #   name: REDS4
+  #   gt_seq_dir: data/REDS4/GT
+  #   lr_seq_dir: data/REDS4/Gaussian4xLR
+  #   filter_file: ~
+  #   num_workers: 4
+  #   pin_memory: true
+  # test4:
+  #   name: UDM10
+  #   gt_seq_dir: data/UDM10/GT
+  #   lr_seq_dir: data/UDM10/Gaussian4xLR
+  #   filter_file: ~
+  #   num_workers: 4
+  #   pin_memory: true
+  # test4:
+  #   name: GoPro11
+  #   gt_seq_dir: data/GoPro11/GT
+  #   lr_seq_dir: data/GoPro11/Gaussian4xLR
+  #   filter_file: ~
+  #   num_workers: 4
+  #   pin_memory: true
+  # test4:
+  #   name: UDM10
+  #   gt_seq_dir: data/UDM10/GT
+  #   lr_seq_dir: data/UDM10/BIx4
+  #   filter_file: ~
+  #   num_workers: 4
+  #   pin_memory: true
+  # test3:
+  #   name: SPMC11
+  #   gt_seq_dir: data/SPMC11/GT
+  #   lr_seq_dir: data/SPMC11/Gaussian4xLR
+  #   filter_file: ~
+  #   num_workers: 4
+  #   pin_memory: true
+
+ # test3:
+  #  name: Gvt72
+   # gt_seq_dir: data/Gvt72/GT
+  #  lr_seq_dir: data/Gvt72/Gaussian4xLR
+  #  filter_file: ~
+  #  num_workers: 4
+  #  pin_memory: true
+
+# model configs
+model:
+  name: FRVSR
+
+  generator:
+    name: EGVSR  # efficient GAN-based generator
+    in_nc: 3
+    out_nc: 3
+    nf: 64
+    nb: 10
+    #load_path: pretrained_models/G_iter200000LRLoss.pth
+    #load_path: pretrained_models/EGVSR_iter420000.pth
+    load_path: newone/G_iter66000last.pth
+
+# test configs
+test:
+  # whether to save the SR results
+  save_res: true
+  res_dir: results
+
+  # temporal padding
+  padding_mode: reflect
+  num_pad_front: 5
+
+# # metric configs
+# metric:
+#   PSNR:
+#     colorspace: y
+#     mult: 1.0
+
+#   LPIPS:
+#     model: net-lin
+#     net: alex
+#     colorspace: rgb
+#     spatial: false
+#     version: 0.1
+#     mult: 1.0
+
+#   tOF:
+#     mult: 1.0
