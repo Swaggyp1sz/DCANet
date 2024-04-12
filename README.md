@@ -22,10 +22,10 @@ Download the official training dataset based on the instructions in [TOflow](htt
 ### B. Testing Datasets
 * Vid4 -- Four video sequences: city, calendar, foliage and walk;
 * Tos3 -- Three video sequences: bridge, face and room;
-* GoPro11 -- eleven video sequence
-All the dataset can download in the Data Availability.
-Vid4 and ToS3 datasets are available in [TecoGAN-Pytorch](https://github.com/skycrapers/TecoGAN-PyTorch)
-The GoPro11 dataset is available in [GoPro](https://seungjunnah.github.io/Datasets/gopro)
+* GoPro11 -- eleven video sequence;
+All the dataset can download in the Data Availability;
+Vid4 and ToS3 datasets are available in [TecoGAN-Pytorch](https://github.com/skycrapers/TecoGAN-PyTorch);
+The GoPro11 dataset is available in [GoPro](https://seungjunnah.github.io/Datasets/gopro);
 
 ## testing
 testing:
