@@ -84,13 +84,13 @@ class FNet(nn.Module):
             ACmix(2*in_nc, 32),
             #nn.Conv2d(2*in_nc, 32, 3, 1, 1, bias=True),
             #DEConv(2*in_nc, 32),
-            AdaptChannel(32, conv_type='2d'),
-            #nn.LeakyReLU(0.2, inplace=True),
+            #AdaptChannel(32, conv_type='2d'),
+            nn.LeakyReLU(0.2, inplace=True),
             #ScConv(32),
             #DEConv(32, 32),
             nn.Conv2d(32, 32, 3, 1, 1, bias=True),
-            AdaptChannel(32, conv_type='2d'),
-            #nn.LeakyReLU(0.2, inplace=True),
+            #AdaptChannel(32, conv_type='2d'),
+            nn.LeakyReLU(0.2, inplace=True),
             nn.MaxPool2d(2, 2))
 
         self.encoder2 = nn.Sequential(
