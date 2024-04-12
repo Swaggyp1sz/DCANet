@@ -42,7 +42,7 @@ class DyReLU(nn.Module):
         raise NotImplementedError
 
 
-class DyReLUB(DyReLU):
+class AdaptChannel(DyReLU):
     def __init__(self, channels, reduction=4, k=2, conv_type='2d'):
         super(DyReLUB, self).__init__(channels, reduction, k, conv_type)
         self.fc2 = nn.Linear(channels // reduction, 2*k*channels)
@@ -84,77 +84,77 @@ class FNet(nn.Module):
             ACmix(2*in_nc, 32),
             #nn.Conv2d(2*in_nc, 32, 3, 1, 1, bias=True),
             #DEConv(2*in_nc, 32),
-            DyReLUB(32, conv_type='2d'),
+            AdaptChannel(32, conv_type='2d'),
             #nn.LeakyReLU(0.2, inplace=True),
             #ScConv(32),
             #DEConv(32, 32),
             nn.Conv2d(32, 32, 3, 1, 1, bias=True),
-            DyReLUB(32, conv_type='2d'),
+            AdaptChannel(32, conv_type='2d'),
             #nn.LeakyReLU(0.2, inplace=True),
             nn.MaxPool2d(2, 2))
 
         self.encoder2 = nn.Sequential(
             nn.Conv2d(32, 64, 3, 1, 1, bias=True),
             #DEConv(32,64),
-            DyReLUB(64, conv_type='2d'),
+            AdaptChannel(64, conv_type='2d'),
             #nn.LeakyReLU(0.2, inplace=True),
             #ScConv(64),
             #DEConv(64,64),
             nn.Conv2d(64, 64, 3, 1, 1, bias=True),
-            DyReLUB(64, conv_type='2d'),
+            AdaptChannel(64, conv_type='2d'),
             #nn.LeakyReLU(0.2, inplace=True),
             nn.MaxPool2d(2, 2))
 
         self.encoder3 = nn.Sequential(
             nn.Conv2d(64, 128, 3, 1, 1, bias=True),
             #DEConv(64,128),
-            DyReLUB(128, conv_type='2d'),
+            AdaptChannel(128, conv_type='2d'),
             #nn.LeakyReLU(0.2, inplace=True),
             #ScConv(128),
             #DEConv(128, 128),
             nn.Conv2d(128, 128, 3, 1, 1, bias=True),
-            DyReLUB(128, conv_type='2d'),
+            AdaptChannel(128, conv_type='2d'),
             #nn.LeakyReLU(0.2, inplace=True),
             nn.MaxPool2d(2, 2))
 
         self.decoder1 = nn.Sequential(
             nn.Conv2d(128, 256, 3, 1, 1, bias=True),
             #DEConv(128,256),
-            DyReLUB(256, conv_type='2d'),
+            AdaptChannel(256, conv_type='2d'),
             #nn.LeakyReLU(0.2, inplace=True),
             #ScConv(256),
             #DEConv(256, 256),
             nn.Conv2d(256, 256, 3, 1, 1, bias=True),
-            DyReLUB(256, conv_type='2d'))
+            AdaptChannel(256, conv_type='2d'))
             #nn.LeakyReLU(0.2, inplace=True))
 
         self.decoder2 = nn.Sequential(
             nn.Conv2d(256, 128, 3, 1, 1, bias=True),
             #DEConv(256,128),
-            DyReLUB(128, conv_type='2d'),
+            AdaptChannel(128, conv_type='2d'),
             #nn.LeakyReLU(0.2, inplace=True),
             #ScConv(128),
             #DEConv(128, 128),
             nn.Conv2d(128, 128, 3, 1, 1, bias=True),
-            DyReLUB(128, conv_type='2d'))
+            AdaptChannel(128, conv_type='2d'))
             #nn.LeakyReLU(0.2, inplace=True))
 
         self.decoder3 = nn.Sequential(
             nn.Conv2d(128, 64, 3, 1, 1, bias=True),
             #DEConv(128,64),
-            DyReLUB(64, conv_type='2d'),
+            AdaptChannel(64, conv_type='2d'),
             #nn.LeakyReLU(0.2, inplace=True),
             #ScConv(64),
             #DEConv(64, 64),
             nn.Conv2d(64, 64, 3, 1, 1, bias=True),
-            DyReLUB(64, conv_type='2d'))
+            AdaptChannel(64, conv_type='2d'))
             #nn.LeakyReLU(0.2, inplace=True))
 
         self.flow = nn.Sequential(
             #DEConv(64,32),
             nn.Conv2d(64, 32, 3, 1, 1, bias=True),
-            DyReLUB(32, conv_type='2d'),
-            #nn.LeakyReLU(0.2, inplace=True),
+            #DyReLUB(32, conv_type='2d'),
+            nn.LeakyReLU(0.2, inplace=True),
             #DEConv(32,2),
             nn.Conv2d(32, 2, 3, 1, 1, bias=True))
 
