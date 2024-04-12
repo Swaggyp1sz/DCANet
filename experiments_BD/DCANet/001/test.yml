@@ -82,14 +82,14 @@ model:
   name: FRVSR
 
   generator:
-    name: EGVSR  # efficient GAN-based generator
+    name: DCANet  # your model
     in_nc: 3
     out_nc: 3
     nf: 64
     nb: 10
     #load_path: pretrained_models/G_iter200000LRLoss.pth
     #load_path: pretrained_models/EGVSR_iter420000.pth
-    load_path: newone/G_iter66000last.pth
+    load_path: newone/DCANet.pth
 
 # test configs
 test:

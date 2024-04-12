@@ -34,13 +34,13 @@ model:
   name: TecoGAN
 
   generator:
-    name: EGVSR  # efficient GAN-based generator
+    name: DCANet  # your model
     in_nc: 3
     out_nc: 3
     nf: 64
     nb: 10
-    load_path: newone/G_iter60000.pth
-    #load_path: pretrained_models/G_iter200000LossReluLR.pth
+    load_path: ~
+    #load_path: pretrained_models/G_iter200000.pth
 
   discriminator:
     name: STNet  # spatio-temporal network
@@ -61,7 +61,7 @@ train:
   generator:
     lr: !!float 5e-5
     lr_schedule:
-      type: FixedLR
+      type: FixedLR  #change to multistepLR
     beta1: 0.9
     beta2: 0.999
 
