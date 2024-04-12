@@ -28,12 +28,12 @@ Vid4 and ToS3 datasets are available in [TecoGAN-Pytorch](https://github.com/sky
 The GoPro11 dataset is available in [GoPro](https://seungjunnah.github.io/Datasets/gopro)
 
 ## testing
-1 for testing:
+testing:
 ```bash
 bash ./test.sh BD DCANet
 ```
 
-2 evaluate:
+evaluate:
 ```bash
 python ./codes/official_metrics/evaluate.py 
 ```
