@@ -76,7 +76,7 @@ class AFNet(nn.Module):
     """
 
     def __init__(self, in_nc):
-        super(FNet, self).__init__()
+        super(AFNet, self).__init__()
         
         #self.attention = DoubleAttention(6, 6, 6)
         #self.double_attention = DoubleAttention(32, 32, 32, reconstruct=True)
@@ -85,67 +85,56 @@ class AFNet(nn.Module):
             nn.Conv2d(32, 32, 3, 1, 1, bias=True),
             nn.MaxPool2d(2, 2))
 
-        self.encoder2 = nn.Sequential(
+        self.aen1 = nn.Sequential(
             nn.Conv2d(32, 64, 3, 1, 1, bias=True),
             #DEConv(32,64),
             AdaptChannel(64, conv_type='2d'),
-            #nn.LeakyReLU(0.2, inplace=True),
             #ScConv(64),
             #DEConv(64,64),
             nn.Conv2d(64, 64, 3, 1, 1, bias=True),
             AdaptChannel(64, conv_type='2d'),
-            #nn.LeakyReLU(0.2, inplace=True),
             nn.MaxPool2d(2, 2))
 
-        self.encoder3 = nn.Sequential(
+        self.aen2 = nn.Sequential(
             nn.Conv2d(64, 128, 3, 1, 1, bias=True),
             #DEConv(64,128),
             AdaptChannel(128, conv_type='2d'),
-            #nn.LeakyReLU(0.2, inplace=True),
             #ScConv(128),
             #DEConv(128, 128),
             nn.Conv2d(128, 128, 3, 1, 1, bias=True),
             AdaptChannel(128, conv_type='2d'),
-            #nn.LeakyReLU(0.2, inplace=True),
             nn.MaxPool2d(2, 2))
 
-        self.decoder1 = nn.Sequential(
+        self.ade1 = nn.Sequential(
             nn.Conv2d(128, 256, 3, 1, 1, bias=True),
             #DEConv(128,256),
             AdaptChannel(256, conv_type='2d'),
-            #nn.LeakyReLU(0.2, inplace=True),
             #ScConv(256),
             #DEConv(256, 256),
             nn.Conv2d(256, 256, 3, 1, 1, bias=True),
             AdaptChannel(256, conv_type='2d'))
-            #nn.LeakyReLU(0.2, inplace=True))
 
-        self.decoder2 = nn.Sequential(
+        self.ade2 = nn.Sequential(
             nn.Conv2d(256, 128, 3, 1, 1, bias=True),
             #DEConv(256,128),
             AdaptChannel(128, conv_type='2d'),
-            #nn.LeakyReLU(0.2, inplace=True),
             #ScConv(128),
             #DEConv(128, 128),
             nn.Conv2d(128, 128, 3, 1, 1, bias=True),
             AdaptChannel(128, conv_type='2d'))
-            #nn.LeakyReLU(0.2, inplace=True))
 
-        self.decoder3 = nn.Sequential(
+        self.ade3 = nn.Sequential(
             nn.Conv2d(128, 64, 3, 1, 1, bias=True),
             #DEConv(128,64),
             AdaptChannel(64, conv_type='2d'),
-            #nn.LeakyReLU(0.2, inplace=True),
             #ScConv(64),
             #DEConv(64, 64),
             nn.Conv2d(64, 64, 3, 1, 1, bias=True),
             AdaptChannel(64, conv_type='2d'))
-            #nn.LeakyReLU(0.2, inplace=True))
 
         self.flow = nn.Sequential(
             #DEConv(64,32),
             nn.Conv2d(64, 32, 3, 1, 1, bias=True),
-            #DyReLUB(32, conv_type='2d'),
             nn.LeakyReLU(0.2, inplace=True),
             #DEConv(32,2),
             nn.Conv2d(32, 2, 3, 1, 1, bias=True))
@@ -156,16 +145,16 @@ class AFNet(nn.Module):
 
         out = self.DCFE(torch.cat([x1, x2], dim=1))
         #out = self.double_attention(out)
-        out = self.encoder2(out)
-        out = self.encoder3(out)
+        out = self.aen1(out)
+        out = self.aen2(out)
         #out = self.double_attention(out)
         out = F.interpolate(
-            self.decoder1(out), scale_factor=2, mode='bilinear', align_corners=False)
+            self.ade1(out), scale_factor=2, mode='bilinear', align_corners=False)
         out = F.interpolate(
-            self.decoder2(out), scale_factor=2, mode='bilinear', align_corners=False)
+            self.ade2(out), scale_factor=2, mode='bilinear', align_corners=False)
         out = F.interpolate(
-            self.decoder3(out), scale_factor=2, mode='bilinear', align_corners=False)
-        out = torch.tanh(self.flow(out)) * 24  # 24 is the max velocity
+            self.ade3(out), scale_factor=2, mode='bilinear', align_corners=False)
+        out = torch.tanh(self.flow(out)) * 24  
 
         return out
 
