@@ -20,9 +20,9 @@ class DyReLU(nn.Module):
         self.conv_type = conv_type
         assert self.conv_type in ['1d', '2d']
 
-        self.fc1 = nn.Linear(channels, channels // reduction)
+        self.dyavpool = nn.Linear(channels, channels // reduction)
         self.relu = nn.ReLU(inplace=True)
-        self.fc2 = nn.Linear(channels // reduction, 2*k)
+        self.dybn = nn.Linear(channels // reduction, 2*k)
         self.sigmoid = nn.Sigmoid()
 
         self.register_buffer('lambdas', torch.Tensor([1.]*k + [0.5]*k).float())
@@ -32,9 +32,9 @@ class DyReLU(nn.Module):
         theta = torch.mean(x, axis=-1)
         if self.conv_type == '2d':
             theta = torch.mean(theta, axis=-1)
-        theta = self.fc1(theta)
+        theta = self.dyavpool(theta)
         theta = self.relu(theta)
-        theta = self.fc2(theta)
+        theta = self.dybn(theta)
         theta = 2 * self.sigmoid(theta) - 1
         return theta
 
@@ -45,7 +45,7 @@ class DyReLU(nn.Module):
 class AdaptChannel(DyReLU):
     def __init__(self, channels, reduction=4, k=2, conv_type='2d'):
         super(DyReLUB, self).__init__(channels, reduction, k, conv_type)
-        self.fc2 = nn.Linear(channels // reduction, 2*k*channels)
+        self.dybn = nn.Linear(channels // reduction, 2*k*channels)
 
     def forward(self, x):
         assert x.shape[1] == self.channels
@@ -71,8 +71,8 @@ class AdaptChannel(DyReLU):
 
 
 # -------------------- generator modules -------------------- #
-class FNet(nn.Module):
-    """ Optical flow estimation network
+class AFNet(nn.Module):
+    """ Adaptive optical flow network
     """
 
     def __init__(self, in_nc):
@@ -82,15 +82,7 @@ class FNet(nn.Module):
         #self.double_attention = DoubleAttention(32, 32, 32, reconstruct=True)
         self.DCFE = nn.Sequential(
             ACmix(2*in_nc, 32),
-            #nn.Conv2d(2*in_nc, 32, 3, 1, 1, bias=True),
-            #DEConv(2*in_nc, 32),
-            #AdaptChannel(32, conv_type='2d'),
-            nn.LeakyReLU(0.2, inplace=True),
-            #ScConv(32),
-            #DEConv(32, 32),
             nn.Conv2d(32, 32, 3, 1, 1, bias=True),
-            #AdaptChannel(32, conv_type='2d'),
-            nn.LeakyReLU(0.2, inplace=True),
             nn.MaxPool2d(2, 2))
 
         self.encoder2 = nn.Sequential(
@@ -260,7 +252,7 @@ class FRNet(BaseSequenceGenerator):
         self.upsample_func = get_upsampling_func(self.scale, degradation)
 
         # define fnet & srnet
-        self.fnet = FNet(in_nc)
+        self.fnet = AFNet(in_nc)
         self.srnet = SRNet(in_nc, out_nc, nf, nb, self.upsample_func)
 
     def generate_dummy_input(self, lr_size):
@@ -441,7 +433,7 @@ class DiscriminatorBlocks(nn.Module):
 
     def forward(self, x):
         
-        # # 使用你提供的代码
+       
         # kv = self.kv(x).reshape(b_, self.permuted_window_size[0], 2, self.permuted_window_size[1], 2, 2, c // 4).permute(0, 1, 3, 5, 2, 4, 6).reshape(b_, n // 4, 2, -1).permute(2, 0, 1, 3)
         # q = self.q(x).reshape(b_, n, -1).permute(2, 0, 1)
         # attn = (q @ kv.transpose(-2, -1))
